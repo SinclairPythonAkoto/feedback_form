@@ -15,7 +15,7 @@ def test_get_hello_world():
 def test_create_feedback(client):
     """Create new feedback form and check if exist in db"""
     # create feedback object
-    feedback = FeedbackForm(
+    feedback: FeedbackForm = FeedbackForm(
         name="John Doe",
         age=17,
         sex="male",
@@ -33,7 +33,7 @@ def test_create_feedback(client):
     # create db
     with app.app_context():
         session: SessionLocal = SessionLocal()
-        new_feedback = FeedbackForm(
+        new_feedback: FeedbackForm = FeedbackForm(
             name=feedback.name,
             age=feedback.age,
             sex=feedback.sex,
@@ -52,7 +52,7 @@ def test_create_feedback(client):
         session.commit()
 
         # get data from db
-        feedback_forms = FeedbackForm.query.all()
+        feedback_forms: FeedbackForm = FeedbackForm.query.all()
 
         # check if feedback object matches db data
         assert feedback.name == feedback_forms[0].name
@@ -77,7 +77,7 @@ def test_create_feedback(client):
 
     # check db after removing entry
     with app.app_context():
-        feedback_forms = FeedbackForm.query.first()
+        feedback_forms: FeedbackForm = FeedbackForm.query.first()
         assert feedback_forms == None
 
 
@@ -85,7 +85,7 @@ def test_create_feedback_function(client):
     """Test if feedback function creates a feedback form"""
     # create a feedback object
     session: SessionLocal = SessionLocal()
-    feedback = FeedbackForm(
+    feedback: FeedbackForm = FeedbackForm(
         name="John Doe",
         age=17,
         sex="male",
@@ -101,7 +101,7 @@ def test_create_feedback_function(client):
         timestamp=datetime.now(),
     )
     # create a feedback form
-    new_feedback = create_feedback(
+    new_feedback: FeedbackForm = create_feedback(
         name=feedback.name,
         age=feedback.age,
         sex=feedback.sex,
@@ -117,7 +117,7 @@ def test_create_feedback_function(client):
     )
     with app.app_context():
         # get data
-        get_feedback = FeedbackForm.query.first()
+        get_feedback: FeedbackForm = FeedbackForm.query.first()
 
         # check feedback object vs db data
         assert feedback.name == get_feedback.name
@@ -139,5 +139,5 @@ def test_create_feedback_function(client):
 
     # check if data has been removed
     with app.app_context():
-        get_feedback = FeedbackForm.query.first()
+        get_feedback: FeedbackForm = FeedbackForm.query.first()
         assert get_feedback == None
