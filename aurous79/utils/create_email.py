@@ -4,13 +4,15 @@ from datetime import datetime
 
 mail = init_mail(app)
 
-email_timestamp = datetime.now().strftime("%H:%M")
-email_datestamp = datetime.now().strftime("%d/%m/%Y")
 
-
-def send_email(name: str, email: str, discount: str) -> None:
+def send_email(name: str, email: str, discount: str) -> bool:
     """Create an email with a 5% or 10% discount"""
-    # set up email message
+    if not email:
+        return False
+    
+    email_timestamp = datetime.now().strftime("%H:%M")
+    email_datestamp = datetime.now().strftime("%d/%m/%Y")
+
     email_message = Message(f"Aurous79® {discount} Discount!", recipients=[email])
     email_message.body = (
         f"Thank you {name} for completing our feedback form! You have earned {discount}"
@@ -24,3 +26,4 @@ def send_email(name: str, email: str, discount: str) -> None:
 
     # send email
     mail.send(email_message)
+    return True
