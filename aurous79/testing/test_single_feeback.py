@@ -28,9 +28,9 @@ def test_create_feedback(client):
         shisha="no",
         comment="First comment",
         email="john@email.com",
-        timestamp=datetime.now()
+        timestamp=datetime.now(),
     )
-    # create db 
+    # create db
     with app.app_context():
         session: SessionLocal = SessionLocal()
         new_feedback = FeedbackForm(
@@ -46,7 +46,7 @@ def test_create_feedback(client):
             shisha=feedback.shisha,
             comment=feedback.comment,
             email=feedback.email,
-            timestamp=feedback.timestamp
+            timestamp=feedback.timestamp,
         )
         session.add(new_feedback)
         session.commit()
@@ -67,19 +67,18 @@ def test_create_feedback(client):
         assert feedback.shisha == feedback_forms[0].shisha
         assert feedback.comment == feedback_forms[0].comment
         assert feedback.email == feedback_forms[0].email
-        
+
         # check if only 1 entry created in db
         assert len(feedback_forms) == 1
 
         # remove db entry
         session.delete(new_feedback)
         session.commit()
-    
+
     # check db after removing entry
     with app.app_context():
-        feedback_forms = FeedbackForm.query.all()
-        assert len(feedback_forms) == 0
-
+        feedback_forms = FeedbackForm.query.first()
+        assert feedback_forms == None
 
 
 def test_create_feedback_function(client):
@@ -99,7 +98,7 @@ def test_create_feedback_function(client):
         shisha="no",
         comment="First comment",
         email="john@email.com",
-        timestamp=datetime.now()
+        timestamp=datetime.now(),
     )
     # create a feedback form
     new_feedback = create_feedback(
@@ -114,11 +113,25 @@ def test_create_feedback_function(client):
         food_quality=feedback.food_quality,
         shisha=feedback.shisha,
         comment=feedback.comment,
-        email=feedback.email
+        email=feedback.email,
     )
     with app.app_context():
-        get_feedback = FeedbackForm.query.all()
-        assert feedback.name == get_feedback[0].name
+        # get data
+        get_feedback = FeedbackForm.query.first()
+
+        # check feedback object vs db data
+        assert feedback.name == get_feedback.name
+        assert feedback.age == get_feedback.age
+        assert feedback.sex == get_feedback.sex
+        assert feedback.first_visit == get_feedback.first_visit
+        assert feedback.return_visit == get_feedback.return_visit
+        assert feedback.clean == get_feedback.clean
+        assert feedback.service == get_feedback.service
+        assert feedback.speed == get_feedback.speed
+        assert feedback.food_quality == get_feedback.food_quality
+        assert feedback.shisha == get_feedback.shisha
+        assert feedback.comment == get_feedback.comment
+        assert feedback.email == get_feedback.email
 
     # remove db data
     session.delete(new_feedback)
@@ -126,5 +139,5 @@ def test_create_feedback_function(client):
 
     # check if data has been removed
     with app.app_context():
-        get_feedback = FeedbackForm.query.all()
-        assert len(get_feedback) == 0
+        get_feedback = FeedbackForm.query.first()
+        assert get_feedback == None
