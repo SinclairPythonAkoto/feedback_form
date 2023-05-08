@@ -5,7 +5,7 @@ from aurous79.extension import SessionLocal
 from aurous79.testing.client import client
 from aurous79.models import FeedbackForm
 from aurous79.utils.create_feedback import create_feedback
-from aurous79.utils.validate_email import validate_email, find_email
+from aurous79.utils.validate_email import validate_email, find_email, is_email_valid
 
 
 def test_validate_confirmation_email():
@@ -60,3 +60,50 @@ def test_find_email(client):
     # check if random email exists in db
     assert find_email('some_random_email@email.com') == False
 
+    session: SessionLocal = SessionLocal()
+    session.delete(new_feedback)
+    session.commit()
+
+    # check if db is empty
+    with app.app_context():
+        get_feedback: FeedbackForm = FeedbackForm.query.first()
+        assert get_feedback == None
+
+
+# create valid emails
+correct_emails = [
+    "john.doe@example.com",
+    "jane.smith123@gmail.com",
+    "james_bond007@yahoo.co.uk",
+    "alexander.hamilton@us.gov",
+    "elonmusk@spacex.com",
+    "billgates@microsoft.com",
+    "stevejobs@apple.com",
+    "markzuckerberg@facebook.com",
+    "jeffbezos@amazon.com",
+    "timcook@apple.com",
+]
+
+# create invalid emails
+incorrect_emails = [
+    "john.doe@com",
+    "jane.smith@.com",
+    "james_bond@007@yahoo.co.uk",
+    "alexander.hamilton@us",
+    "elonmusk@spacex",
+    "billgates@microsoft",
+    "stevejobs@apple",
+    "markzuckerberg@.com",
+    "jeffbezos@amazon.",
+    "timcook@apple.",
+]
+
+# check if correct emails are valid
+@pytest.mark.parametrize("email", correct_emails)
+def test_valid_emails(email):
+    assert is_email_valid(email) == True
+
+# check if incorrect emails are invalid
+@pytest.mark.parametrize("email", incorrect_emails)
+def test_invalid_emails(email):
+    assert is_email_valid(email) == False

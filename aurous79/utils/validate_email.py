@@ -1,3 +1,4 @@
+import re
 from aurous79 import app
 from aurous79.extension import SessionLocal
 from aurous79.models import FeedbackForm
@@ -22,3 +23,11 @@ def find_email(email: str) -> bool:
             return False  # 10% discount
         else:
             return True  # 5% discount
+
+
+def is_email_valid(email: str) -> bool:
+    """Uses regex to check for valid email address."""
+    # email format using regex
+    email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    # check if the user email matches same format
+    return re.match(email_regex, email) is not None
