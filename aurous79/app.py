@@ -62,26 +62,28 @@ def home():
 def feedback():
     if request.method == "GET":
         return render_template("feedback.html", title=title)
-    name = request.form["name"]
-    age = request.form["age"]
-    sex = request.form["sex"]
-    first_visit = request.form["first_visit"]
-    return_visit = request.form["return_visit"]
-    cleanliness = request.form["cleanliness"]
-    customer_service = request.form["customer_service"]
-    service_speed = request.form["speed"]
-    food_quality = request.form["food_quality"]
-    shisha = request.form["shisha"]
-    customer_comment = request.form["customer_comment"]
-    customer_email = request.form["customer_email"]
-    confirm_email = request.form["confirm_email"]
+    name: str = request.form["name"]
+    age: str = request.form["age"]
+    sex: str = request.form["sex"]
+    first_visit: str = request.form["first_visit"]
+    return_visit: str = request.form["return_visit"]
+    cleanliness: str = request.form["cleanliness"]
+    customer_service: str = request.form["customer_service"]
+    service_speed: str = request.form["speed"]
+    food_quality: str = request.form["food_quality"]
+    shisha: str = request.form["shisha"]
+    customer_comment: str = request.form["customer_comment"]
+    customer_email: str = request.form["customer_email"]
+    confirm_email: str = request.form["confirm_email"]
 
     # check if customer is < 16
     verified_age: bool = minimum_age(int(age))
     if verified_age is False:
-        message = "You must be 16 or older to complete this form."
+        message: str = "You must be 16 or older to complete this form."
         return render_template("home.html", message=message, title=title), 308
     else:
+        # use regex to check valid email 1st before anything
+        # if not valid send error message
         # check if customer is >= 18
         over_18: bool = check_age(int(age))
         if over_18 is True:
@@ -163,10 +165,13 @@ def feedback():
                     customer_comment,
                     customer_email,
                 )
-                discount = "5%"
+                discount: str = "5%"
                 send_customer_email: Message = send_email(
                     name, customer_email, discount
                 )
+                # check if email has been sent (True/False)
+                # if true proceed to flash message
+                # if False return error message
                 flash(f"Thank you {name} for your feedback!")
                 return redirect(url_for("home")), 201
             # if invalid emails, return error message
@@ -192,7 +197,7 @@ def login():
             flash("Welcome back to Aurous79!")
             return redirect(url_for("admin"))
         else:
-            error = "Invalid username and/or password. You must be management of Aurous79 to login."
+            error: str = "Invalid username and/or password. You must be management of Aurous79 to login."
     return render_template("login.html", error=error)
 
 
@@ -233,16 +238,16 @@ def send_mass_emails():
         return render_template("mass_emails.html")
     else:
         session: SessionLocal = SessionLocal()
-        email_subject = request.form["sub"]
-        content = request.form["email_content"]
+        email_subject: str = request.form["sub"]
+        content: str = request.form["email_content"]
         if request.form["massEmail"] == "feedback_lib":
             db_emails = session.query(FeedbackForm.email).all()
-            emails = db_emails
-            sendEmail = []
+            emails: List[FeedbackForm] = db_emails
+            sendEmail: List[str] = []
             for e in emails:
                 sendEmail.append(e)
             msg = Message(f"{email_subject}", recipients=sendEmail)
-            msg.body = f"{content}\n\n"
+            msg.body: str = f"{content}\n\n"
             with app.open_resource("aurouslogo.jpg") as logo:
                 msg.attach("aurouslogo.jpg", "image/jpg", logo.read())
             mail = init_mail(app)
