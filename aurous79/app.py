@@ -241,10 +241,9 @@ def send_mass_emails():
         email_subject: str = request.form["sub"]
         content: str = request.form["email_content"]
         if request.form["massEmail"] == "feedback_lib":
-            db_emails = session.query(FeedbackForm.email).all()
-            emails: List[FeedbackForm] = db_emails
+            db_emails: List[FeedbackForm] = session.query(FeedbackForm.email).all()
             sendEmail: List[str] = []
-            for e in emails:
+            for e in db_emails:
                 sendEmail.append(e)
             msg = Message(f"{email_subject}", recipients=sendEmail)
             msg.body: str = f"{content}\n\n"
@@ -252,6 +251,26 @@ def send_mass_emails():
                 msg.attach("aurouslogo.jpg", "image/jpg", logo.read())
             mail = init_mail(app)
             mail.send(msg)
+            flash("Your email has been sent!")
+            return render_template("mass_emails.html", title=title)
+        elif request.form["massEmail"] == "email_lib":
+            db_emails: List[EmailLibrary] = session.query(EmailLibrary.customer_email).all()
+            sendEmail: List[str] = []
+            for e in db_emails:
+                sendEmail.append(e)
+            msg = Message(f"{email_subject}", recipients=sendEmail)
+            msg.body: str = f"{content}\n\n"
+            with app.open_resource("aurouslogo.jpg") as logo:
+                msg.attach("aurouslogo.jpg", "image/jpg", logo.read())
+            mail = init_mail(app)
+            mail.send(msg)
+            flash("Your email has been sent!")
+            return render_template("mass_emails.html", title=title)
+        else:
+            if request.form["massEmail"] == None:
+                flash("You forgot to select an email source.")
+                return redirect(url_for("send_mass_emails"))
+
 
 
 @app.route("/email-library")
