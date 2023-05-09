@@ -14,6 +14,7 @@ from aurous79.utils.validate_age import minimum_age, check_age
 from aurous79.utils.create_email import send_email
 from aurous79.utils.mass_email_from_feedback import send_batch_emails_from_feedback
 from aurous79.utils.mass_email_from_email_library import send_batch_emails_from_email_lib
+from aurous79.utils.add_to_email_library import add_to_email_library
 
 from dotenv import load_dotenv
 
@@ -261,9 +262,24 @@ def send_mass_emails():
 
 
 
-@app.route("/email-library")
+@app.route("/email-library", methods=["GET", "POST"])
+@login_required
 def email_library():
-    return render_template("email_library.html")
+    if request.method == "GET":
+        return render_template("email_library.html", title=title)
+    else:
+        session: SessionLocal = SessionLocal()
+        name: str = request.form["name"]
+        email: str = request.form["email"]
+        new_entry: EmailLibrary = add_to_email_library(name, email)
+        session.add(new_entry)
+        session.commit()
+        # get all email entries
+        data: EmailLibrary = session.query(EmailLibrary).order_by(EmailLibrary.id).all()
+        flash(f"You have stored {name}\'s email to the Aurous79® Email Library")
+        # display all entries
+        return render_template("email_library,html", title=title, data=data)
+
 
 
 if __name__ == "__main__":
