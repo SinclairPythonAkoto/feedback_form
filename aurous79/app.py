@@ -224,9 +224,43 @@ def logout():
     return redirect(url_for("home"))
 
 
-@app.route("/report")
+@app.route("/report", methods=["GET", "POST"])
+@login_required
 def report():
-    return render_template("report.html")
+    session: SessionLocal = SessionLocal()
+    run_report: str = request.form["run_rpt"]
+    if request.method == "GET":
+        return render_template("report.html")
+    else:
+        if run_report == "male":
+            male_entries: List[FeedbackForm] = session.query(FeedbackForm).filter(FeedbackForm.sex=="male").all()
+            return render_template("report.html", title=title, male_entries=male_entries)
+        elif run_report == "female":
+            female_entries: List[FeedbackForm] = session.query(FeedbackForm).filter(FeedbackForm.sex=="female").all()
+            return render_template("report.html", title=title, female_entries=female_entries)
+        elif run_report == "n_visit":
+            first_visit_entries: List[FeedbackForm] = session.query(FeedbackForm).filter(FeedbackForm.first_visit=="yes").all()
+            return render_template("report.html", title=title, first_visit_entries=first_visit_entries)
+        elif run_report == "r_visit":
+            return_visit_entries: List[FeedbackForm] = session.query(FeedbackForm).filter(FeedbackForm.return_visit=="yes").all()
+            return render_template("report.html", title=title, return_visit_entries=return_visit_entries)
+        elif run_report == "shisha":
+            shisha_entries: List[FeedbackForm] = session.query(FeedbackForm).filter(FeedbackForm.shisha=="yes").all()
+            return render_template("report.html", title=title, shisha_entries=shisha_entries)
+        elif run_report == "clean":
+            clean_entries: List[FeedbackForm] = session.query(FeedbackForm).order_by(FeedbackForm.id).all()
+            return render_template("report.html", title=title, clean_entries=clean_entries)
+        elif run_report == "service":
+            service_entries: List[FeedbackForm] = session.query(FeedbackForm).order_by(FeedbackForm.id).all()
+            return render_template("report.html", title=title, service_entries=service_entries)
+        elif run_report == "speed":
+            speed_entries: List[FeedbackForm] = session.query(FeedbackForm).order_by(FeedbackForm.id).all()
+            return render_template("report.html", title=title, speed_entries=speed_entries)
+        else:
+            if run_report == None:
+                flash(f"You need to select a report to run.")
+                return redirect(url_for('report'))
+
 
 
 @app.route("/send-email", methods=["GET", "POST"])
