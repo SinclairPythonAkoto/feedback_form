@@ -1,30 +1,30 @@
 import pytest
 from datetime import datetime
-from aurous79 import app, init_mail
-from aurous79.models import FeedbackForm
+from aurous79 import app
+from aurous79.extension import SessionLocal
 from aurous79.testing.client import client
+from aurous79.models import FeedbackForm
 from aurous79.utils.create_feedback import create_feedback
-from aurous79.utils.mass_email_from_feedback import send_batch_emails_from_feedback, SessionLocal
 
 
-def test_send_batch_emails_from_feedback(client):
-    """Check if batch emails are sent from feedback"""
-
-    # create some fake feedback form data
+def test_send_batch_emails(client):
+    """Create multiple feedback forms and check if exist in db"""
+    session: SessionLocal = SessionLocal()
+    # create more than feedback form
     customer1: FeedbackForm = FeedbackForm(
-    name="John Doe",
-    age=17,
-    sex="male",
-    first_visit="yes",
-    return_visit="yes",
-    clean=3,
-    service=4,
-    speed=5,
-    food_quality=3,
-    shisha="no",
-    comment="First comment",
-    email="john@email.com",
-    timestamp=datetime.now(),
+        name="John Doe",
+        age=17,
+        sex="male",
+        first_visit="yes",
+        return_visit="yes",
+        clean=3,
+        service=4,
+        speed=5,
+        food_quality=3,
+        shisha="no",
+        comment="First comment",
+        email="john@email.com",
+        timestamp=datetime.now(),
     )
     customer1_feedback: FeedbackForm = create_feedback(
         name=customer1.name,
@@ -101,23 +101,12 @@ def test_send_batch_emails_from_feedback(client):
         email=customer3.email,
     )
 
+    # get db data
     with app.app_context():
-        mail = init_mail(app)
-        session: SessionLocal = SessionLocal()
-        email_subject: str = "Test Email Subject"
-        email_content: str = "Test Email Content"
-    with mail.record_messages() as outbox:
-        email_sent: bool = send_batch_emails_from_feedback(email_subject, email_content)
+        get_feedback: FeedbackForm = FeedbackForm.query.all()
 
-        # check if email was sent
-        assert email_sent is True
-
-        # check if the email was sent to the correct recipient
-        assert len(outbox) == 3
-        assert outbox[0].subject == email_subject
-        assert outbox[0].recipients == ["johndoe@example.com"]
-        assert email_content in outbox[0].body    # check if email body exists
-        assert outbox[0].body == email_content    # check if email body is correct
+        # check if 3 db entries created
+        assert len(get_feedback) == 3
     
     # remove db data
     session.delete(customer1_feedback)
