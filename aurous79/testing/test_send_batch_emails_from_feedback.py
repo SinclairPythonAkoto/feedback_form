@@ -1,13 +1,14 @@
 import pytest
 from datetime import datetime
-from aurous79 import app
+from aurous79 import app, init_mail
 from aurous79.extension import SessionLocal
 from aurous79.testing.client import client
 from aurous79.models import FeedbackForm
 from aurous79.utils.create_feedback import create_feedback
+from aurous79.utils.mass_email_from_feedback import send_batch_emails_from_feedback
 
 
-def test_send_batch_emails(client):
+def test_send_batch_emails():
     """Create multiple feedback forms and check if exist in db"""
     session: SessionLocal = SessionLocal()
     # create more than feedback form
@@ -107,6 +108,24 @@ def test_send_batch_emails(client):
 
         # check if 3 db entries created
         assert len(get_feedback) == 3
+
+    with app.app_context():
+        mail = init_mail(app)
+        with mail.record_messages() as outbox:
+            email_subject = "Test Email Subject"
+            email_content = "Test Email Content"
+            sent_email: bool = send_batch_emails_from_feedback(email_subject, email_content)
+            
+            # check if emails were sent
+            assert sent_email is True
+
+            # check if outbox object exists
+            assert len(outbox) == 1
+            assert outbox[0].subject == email_subject
+            assert outbox[0].recipients == [customer1.email, customer2.email, customer3.email]
+            assert email_content in outbox[0].body
+            assert outbox[0].body == f"{email_content}\n\n"
+        
     
     # remove db data
     session.delete(customer1_feedback)
