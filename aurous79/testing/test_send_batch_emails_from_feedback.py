@@ -8,7 +8,7 @@ from aurous79.utils.create_feedback import create_feedback
 from aurous79.utils.mass_email_from_feedback import send_batch_emails_from_feedback
 
 
-def test_send_batch_emails():
+def test_send_batch_feedback_emails():
     """Create multiple feedback forms and check if exist in db"""
     session: SessionLocal = SessionLocal()
     # create more than feedback form
