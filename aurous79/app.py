@@ -12,8 +12,9 @@ from aurous79.utils.validate_email import validate_email, find_email
 from aurous79.utils.create_feedback import create_feedback
 from aurous79.utils.validate_age import minimum_age, check_age
 from aurous79.utils.create_email import send_email
+from aurous79.utils.mass_email_from_feedback import send_batch_emails_from_feedback
+from aurous79.utils.mass_email_from_email_library import send_batch_emails_from_email_lib
 
-# from aurous79.utils.login_required import login_required
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -237,33 +238,20 @@ def send_mass_emails():
     if request.method == "GET":
         return render_template("mass_emails.html")
     else:
-        session: SessionLocal = SessionLocal()
         email_subject: str = request.form["sub"]
         content: str = request.form["email_content"]
         if request.form["massEmail"] == "feedback_lib":
-            db_emails: List[FeedbackForm] = session.query(FeedbackForm.email).all()
-            sendEmail: List[str] = []
-            for e in db_emails:
-                sendEmail.append(e)
-            msg = Message(f"{email_subject}", recipients=sendEmail)
-            msg.body: str = f"{content}\n\n"
-            with app.open_resource("aurouslogo.jpg") as logo:
-                msg.attach("aurouslogo.jpg", "image/jpg", logo.read())
-            mail = init_mail(app)
-            mail.send(msg)
+            feedback_batch_emails: bool = send_batch_emails_from_feedback(email_subject, content)
+            if feedback_batch_emails is False:
+                flash("Could not send email. There are no emails stored in database.")
+                return redirect(url_for("send_mass_emails"))
             flash("Your email has been sent!")
             return render_template("mass_emails.html", title=title)
         elif request.form["massEmail"] == "email_lib":
-            db_emails: List[EmailLibrary] = session.query(EmailLibrary.customer_email).all()
-            sendEmail: List[str] = []
-            for e in db_emails:
-                sendEmail.append(e)
-            msg = Message(f"{email_subject}", recipients=sendEmail)
-            msg.body: str = f"{content}\n\n"
-            with app.open_resource("aurouslogo.jpg") as logo:
-                msg.attach("aurouslogo.jpg", "image/jpg", logo.read())
-            mail = init_mail(app)
-            mail.send(msg)
+            email_lib_batch_emails: bool = send_batch_emails_from_email_lib(email_subject, content)
+            if email_lib_batch_emails is None:
+                flash("Could not send email. There are no emails stored in database.")
+                return redirect(url_for("send_mass_emails"))
             flash("Your email has been sent!")
             return render_template("mass_emails.html", title=title)
         else:
