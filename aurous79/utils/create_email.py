@@ -27,3 +27,15 @@ def send_email(name: str, email: str, discount: str) -> bool:
     # send email
     mail.send(email_message)
     return True
+
+
+def send_one_email(email:str, subject: str, content: str) -> bool:
+    """Send an email to chosen recipient"""
+    if email is None:
+        return False
+    msg: Message = Message(f"{subject}", recipients=[email])
+    msg.body = f"{content}\n\n"
+    with app.open_resource("aurouslogo.jpg") as logo:
+        msg.attach("aurouslogo.jpg", "image/jpeg", logo.read())
+    mail.send(msg)
+    return True

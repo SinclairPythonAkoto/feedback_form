@@ -8,10 +8,10 @@ from flask_mail import Message
 from time import strftime
 from aurous79.extension import init_db, SessionLocal
 from aurous79.models import FeedbackForm, EmailLibrary
-from aurous79.utils.validate_email import validate_email, find_email
+from aurous79.utils.validate_email import validate_email, find_email, is_email_valid
 from aurous79.utils.create_feedback import create_feedback
 from aurous79.utils.validate_age import minimum_age, check_age
-from aurous79.utils.create_email import send_email
+from aurous79.utils.create_email import send_email, send_one_email
 from aurous79.utils.mass_email_from_feedback import send_batch_emails_from_feedback
 from aurous79.utils.mass_email_from_email_library import send_batch_emails_from_email_lib
 from aurous79.utils.add_to_email_library import add_to_email_library
@@ -203,7 +203,7 @@ def login():
     return render_template("login.html", error=error)
 
 
-@app.route("/admin")
+@app.route("/admin", methods=["GET", "POST"])
 @login_required
 def admin():
     session: SessionLocal = SessionLocal()
@@ -229,9 +229,30 @@ def report():
     return render_template("report.html")
 
 
-@app.route("/send-email")
+@app.route("/send-email", methods=["GET", "POST"])
+@login_required
 def send_single_email():
-    return render_template("send_email.html")
+    if request.method == "GET":
+        return render_template("send_email.html", title=title) 
+    else:
+        email: str = request.form["name"]
+        email_subject: str = request.form["sub"]
+        email_content: str = request.form["email_content"]
+        create_email: bool = send_one_email(email, email_subject, email_content)
+
+        # check if the email is valid
+        if is_email_valid(email) is False:
+            flash("Please enter a valid email.")
+            return redirect(url_for("send_single_email"))
+        
+        # check if email has been sent
+        if create_email is False:
+            flash("The email did not send. Please check the credentials and try again.")
+            return redirect(url_for("send_single_email"))
+        session: SessionLocal = SessionLocal()
+        data: List[EmailLibrary] = session.query(EmailLibrary).order_by(EmailLibrary.id).all()
+        flash(f"Your email has been sent to {email}.")
+        return render_template("send_email.html", title=title, data=data)
 
 
 @app.route("/mass-emails", methods=["GET", "POST"])
