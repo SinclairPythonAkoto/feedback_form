@@ -15,6 +15,9 @@ from aurous79.utils.create_email import send_email, send_one_email
 from aurous79.utils.mass_email_from_feedback import send_batch_emails_from_feedback
 from aurous79.utils.mass_email_from_email_library import send_batch_emails_from_email_lib
 from aurous79.utils.add_to_email_library import add_to_email_library
+from aurous79.utils.report_functions import (
+    get_male_report, get_female_report, get_first_visit_report, get_return_visit_report, get_shisha_report, get_all_reports
+)
 
 from dotenv import load_dotenv
 
@@ -233,28 +236,28 @@ def report():
         return render_template("report.html")
     else:
         if run_report == "male":
-            male_entries: List[FeedbackForm] = session.query(FeedbackForm).filter(FeedbackForm.sex=="male").all()
+            male_entries: List[FeedbackForm] = get_male_report()
             return render_template("report.html", title=title, male_entries=male_entries)
         elif run_report == "female":
-            female_entries: List[FeedbackForm] = session.query(FeedbackForm).filter(FeedbackForm.sex=="female").all()
+            female_entries: List[FeedbackForm] = get_female_report()
             return render_template("report.html", title=title, female_entries=female_entries)
         elif run_report == "n_visit":
-            first_visit_entries: List[FeedbackForm] = session.query(FeedbackForm).filter(FeedbackForm.first_visit=="yes").all()
+            first_visit_entries: List[FeedbackForm] = get_first_visit_report()
             return render_template("report.html", title=title, first_visit_entries=first_visit_entries)
         elif run_report == "r_visit":
-            return_visit_entries: List[FeedbackForm] = session.query(FeedbackForm).filter(FeedbackForm.return_visit=="yes").all()
+            return_visit_entries: List[FeedbackForm] = get_return_visit_report()
             return render_template("report.html", title=title, return_visit_entries=return_visit_entries)
         elif run_report == "shisha":
-            shisha_entries: List[FeedbackForm] = session.query(FeedbackForm).filter(FeedbackForm.shisha=="yes").all()
+            shisha_entries: List[FeedbackForm] = get_shisha_report()
             return render_template("report.html", title=title, shisha_entries=shisha_entries)
         elif run_report == "clean":
-            clean_entries: List[FeedbackForm] = session.query(FeedbackForm).order_by(FeedbackForm.id).all()
+            clean_entries: List[FeedbackForm] = get_all_reports()
             return render_template("report.html", title=title, clean_entries=clean_entries)
         elif run_report == "service":
-            service_entries: List[FeedbackForm] = session.query(FeedbackForm).order_by(FeedbackForm.id).all()
+            service_entries: List[FeedbackForm] = get_all_reports()
             return render_template("report.html", title=title, service_entries=service_entries)
         elif run_report == "speed":
-            speed_entries: List[FeedbackForm] = session.query(FeedbackForm).order_by(FeedbackForm.id).all()
+            speed_entries: List[FeedbackForm] = get_all_reports()
             return render_template("report.html", title=title, speed_entries=speed_entries)
         else:
             if run_report == None:

@@ -45,7 +45,7 @@
 	<br>
 	<div>
 		<table>
-			{% if male_rpt %}
+			{% if male_entries %}
 			<h2>Male Feedback</h2>
 			<p>This is a report of all the males that completed the Aurous79 feedback form.</p>
 				<tr>
@@ -56,7 +56,7 @@
 					<th>EMAIL</th>
 					<th>DATE & TIME</th>
 				</tr>
-				{% for m in male_rpt %}
+				{% for m in male_entries %}
 				<tr>
 					<td>{{ m.id }}</td>
 					<td>{{ m.name }}</td>
@@ -68,7 +68,7 @@
 				{% endfor %}
 			{% endif %}
 
-			{% if female_rpt %}
+			{% if female_entries %}
 			<h2>Female Feedback</h2>
 			<p>This is a report of all the females that completed the Aurous79 feedback form.</p>
 				<tr>
@@ -79,7 +79,7 @@
 					<th>EMAIL</th>
 					<th>DATE & TIME</th>
 				</tr>
-				{% for f in female_rpt %}
+				{% for f in female_entries %}
 				<tr>
 					<td>{{ f.id }}</td>
 					<td>{{ f.name }}</td>
@@ -91,7 +91,7 @@
 				{% endfor %}
 			{% endif %}
 
-			{% if new_visit_rpt %}
+			{% if first_visit_entries %}
 			<h2>New Visitors</h2>
 			<p>These customers are new visitors, why don't you send them a promotional discount/email in order to intice them to come back to Aurous79!</p>
 				<tr>
@@ -103,20 +103,20 @@
 					<th>EMAIL</th>
 					<th>DATE & TIME</th>
 				</tr>
-				{% for nv in new_visit_rpt %}
+				{% for fv in first_visit_entries %}
 				<tr>
-					<td>{{ nv.id }}</td>
-					<td>{{ nv.name }}</td>
-					<td>{{ nv.age }}</td>
-					<td>{{ nv.sex }}</td>
-					<td>{{ nv.comment }}</td>
-					<td>{{ nv.email }}</td>
-					<td>{{ nv.dateStamp }}</td>
+					<td>{{ fv.id }}</td>
+					<td>{{ fv.name }}</td>
+					<td>{{ fv.age }}</td>
+					<td>{{ fv.sex }}</td>
+					<td>{{ fv.comment }}</td>
+					<td>{{ fv.email }}</td>
+					<td>{{ fv.dateStamp }}</td>
 				</tr>
 				{% endfor %}
 			{% endif %}
 
-			{% if return_visit_rpt %}
+			{% if return_visit_entries %}
 			<h2>Returning Customers</h2>
 			<p>These customers have stated they would like to return, why don't you offer them a promational discount in order to bring them back to Aurous79!</p>
 				<tr>
@@ -128,7 +128,7 @@
 					<th>EMAIL</th>
 					<th>DATE & TIME</th>
 				</tr>
-				{% for rv in return_visit_rpt %}
+				{% for rv in return_visit_entries %}
 				<tr>
 					<td>{{ rv.id }}</td>
 					<td>{{ rv.name }}</td>
@@ -141,7 +141,7 @@
 				{% endfor %}
 			{% endif %}
 
-			{% if shisha_rpt %}
+			{% if shisha_entries %}
 			<h2>Shisha Customers</h2>
 			<p>Why don't you send them a promotional discount/email in order for your customers to try out more of your shisha flavours?</p>
 				<tr>
@@ -153,7 +153,7 @@
 					<th>EMAIL</th>
 					<th>DATE & TIME</th>
 				</tr>
-				{% for s in shisha_rpt %}
+				{% for s in shisha_entries %}
 				<tr>
 					<td>{{ s.id }}</td>
 					<td>{{ s.name }}</td>
@@ -166,7 +166,7 @@
 				{% endfor %}
 			{% endif %}
 
-			{% if clean_rpt %}
+			{% if service_entries %}
 			<h2>Cleanliness</h2>
 			<p>On a scale from 1 - 5; 1 = Very Dirty, 5 = Excellent</p>
 				<tr>
@@ -179,7 +179,7 @@
 					<th>EMAIL</th>
 					<th>DATE & TIME</th>
 				</tr>
-				{% for c in clean_rpt %}
+				{% for c in service_entries %}
 				<tr>
 					<td>{{ c.id }}</td>
 					<td>{{ c.name }}</td>
@@ -220,7 +220,7 @@
 				{% endfor %}
 			{% endif %}
 
-			{% if speed_rpt %}
+			{% if speed_entries %}
 			<h2>Speed of Service</h2>
 			<p>On a scale from 1 - 5; 1 = Too Slow, 5 = Excellent</p>
 				<tr>
@@ -233,7 +233,7 @@
 					<th>EMAIL</th>
 					<th>DATE & TIME</th>
 				</tr>
-				{% for s in speed_rpt %}
+				{% for s in speed_entries %}
 				<tr>
 					<td>{{ s.id }}</td>
 					<td>{{ s.name }}</td>
