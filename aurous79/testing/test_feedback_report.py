@@ -84,3 +84,64 @@ def test_get_male_report(client):
     with app.app_context():
         get_feedback: FeedbackForm = FeedbackForm.query.first()
         assert get_feedback == None
+
+
+def test_get_female_report(client):
+    session: SessionLocal = SessionLocal()
+    # create feedback object
+    customer: FeedbackForm = FeedbackForm(
+        name="Jane Doe",
+        age=20,
+        sex="female",
+        first_visit="yes",
+        return_visit="yes",
+        clean=3,
+        service=4,
+        speed=5,
+        food_quality=3,
+        shisha="yes",
+        comment="Female comment",
+        email="jane@email.com",
+        timestamp=datetime.now(),
+    )
+    # add feedback object to db
+    customer_feedback: FeedbackForm = create_feedback(
+        name=customer.name,
+        age=customer.age,
+        sex=customer.sex,
+        first_visit=customer.first_visit,
+        return_visit=customer.return_visit,
+        clean=customer.clean,
+        service=customer.service,
+        speed=customer.speed,
+        food_quality=customer.food_quality,
+        shisha=customer.shisha,
+        comment=customer.comment,
+        email=customer.email
+    )
+    with app.app_context():
+        # get feedback object from db
+        get_feedback: FeedbackForm = FeedbackForm.query.first()
+        # check if db object is same as feedback object
+        assert customer.sex == get_feedback.sex
+        assert customer.first_visit == get_feedback.first_visit
+        assert customer.return_visit == get_feedback.return_visit
+        assert customer.shisha == get_feedback.shisha
+
+        # check male results
+        female_result: FeedbackForm = get_female_report()
+        assert female_result[0].sex == "female"
+        assert female_result[0].sex == get_feedback.sex
+        assert all(entry.sex == "female" for entry in female_result)
+
+        # check female results
+    
+    # remove db data
+    session.delete(customer_feedback)
+    session.commit()
+
+    
+    # check if data has been removed
+    with app.app_context():
+        get_feedback: FeedbackForm = FeedbackForm.query.first()
+        assert get_feedback == None
