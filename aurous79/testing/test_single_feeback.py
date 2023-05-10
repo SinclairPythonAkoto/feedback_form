@@ -12,7 +12,7 @@ def test_get_hello_world():
     assert hello == "hello world"
 
 
-def test_create_feedback(client):
+def test_feedback_db(client):
     """Create new feedback form and check if exist in db"""
     # create feedback object
     feedback: FeedbackForm = FeedbackForm(

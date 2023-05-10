@@ -7,7 +7,7 @@ from aurous79.utils.validate_email import is_email_valid
 from aurous79.utils.create_email import send_email
 
 
-def test_send_automate_to_customer():
+def test_send_automated_email_to_customer():
     """Check if email is sent to customer"""
     email_timestamp: datetime = datetime.now().strftime("%H:%M")
     email_datestamp: datetime = datetime.now().strftime("%d/%m/%Y")
