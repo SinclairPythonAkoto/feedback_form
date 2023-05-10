@@ -1,12 +1,5 @@
 import pytest
-from datetime import datetime
 from aurous79 import app, init_mail
-from aurous79.extension import SessionLocal
-from aurous79.testing.client import client
-from aurous79.models import EmailLibrary
-from aurous79.utils.add_to_email_library import add_to_email_library
-from aurous79.utils.create_feedback import create_feedback
-from aurous79.utils.mass_email_from_email_library import send_batch_emails_from_email_lib
 from aurous79.utils.create_email import send_one_email
 
 
