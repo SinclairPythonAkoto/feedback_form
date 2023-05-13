@@ -114,19 +114,24 @@ def test_send_batch_feedback_emails():
         with mail.record_messages() as outbox:
             email_subject = "Test Email Subject"
             email_content = "Test Email Content"
-            sent_email: bool = send_batch_emails_from_feedback(email_subject, email_content)
-            
+            sent_email: bool = send_batch_emails_from_feedback(
+                email_subject, email_content
+            )
+
             # check if emails were sent
             assert sent_email is True
 
             # check if outbox object exists
             assert len(outbox) == 1
             assert outbox[0].subject == email_subject
-            assert outbox[0].recipients == [customer1.email, customer2.email, customer3.email]
+            assert outbox[0].recipients == [
+                customer1.email,
+                customer2.email,
+                customer3.email,
+            ]
             assert email_content in outbox[0].body
             assert outbox[0].body == f"{email_content}\n\n"
-        
-    
+
     # remove db data
     session.delete(customer1_feedback)
     session.delete(customer2_feedback)

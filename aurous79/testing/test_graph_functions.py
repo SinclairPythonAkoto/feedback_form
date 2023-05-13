@@ -7,30 +7,111 @@ from aurous79.extension import SessionLocal
 from aurous79.testing.client import client
 from aurous79.models import FeedbackForm
 from aurous79.utils.create_feedback import create_feedback
-from aurous79.utils.graph_functions import(
-    male_x, male_y,
-    female_x, female_y,
-    first_visit_x, first_visit_y,
-    return_visit_x, return_visit_y,
-    shisha_x, shisha_y,
-    clean_x, clean_y,
-    speed_x, speed_y,
-    service_x, service_y,
+from aurous79.utils.graph_functions import (
+    male_x,
+    male_y,
+    female_x,
+    female_y,
+    first_visit_x,
+    first_visit_y,
+    return_visit_x,
+    return_visit_y,
+    shisha_x,
+    shisha_y,
+    clean_x,
+    clean_y,
+    speed_x,
+    speed_y,
+    service_x,
+    service_y,
 )
 
 male_results: List[Tuple] = [
-    ("John Doe", 17, "male", "yes", "yes", randint(1,5), randint(1,5), randint(1,5), randint(1,5), "yes", "Male comment", "john@email.com", datetime.now()),
-    ("Max Jones", 19, "male", "yes", "yes", randint(1,5), randint(1,5), randint(1,5), randint(1,5), "yes", "Male comment", "max@email.com", datetime.now()),
+    (
+        "John Doe",
+        17,
+        "male",
+        "yes",
+        "yes",
+        randint(1, 5),
+        randint(1, 5),
+        randint(1, 5),
+        randint(1, 5),
+        "yes",
+        "Male comment",
+        "john@email.com",
+        datetime.now(),
+    ),
+    (
+        "Max Jones",
+        19,
+        "male",
+        "yes",
+        "yes",
+        randint(1, 5),
+        randint(1, 5),
+        randint(1, 5),
+        randint(1, 5),
+        "yes",
+        "Male comment",
+        "max@email.com",
+        datetime.now(),
+    ),
 ]
 
 female_results: List[Tuple] = [
-    ("Jane Doe", 25, "female", "yes", "yes", randint(1,5), randint(1,5), randint(1,5), randint(1,5), "yes", "Female comment", "jane@email.com", datetime.now()),
-    ("Mary Jane", 35, "female", "yes", "yes", randint(1,5), randint(1,5), randint(1,5), randint(1,5), "yes", "Female comment", "mary@email.com", datetime.now()),
+    (
+        "Jane Doe",
+        25,
+        "female",
+        "yes",
+        "yes",
+        randint(1, 5),
+        randint(1, 5),
+        randint(1, 5),
+        randint(1, 5),
+        "yes",
+        "Female comment",
+        "jane@email.com",
+        datetime.now(),
+    ),
+    (
+        "Mary Jane",
+        35,
+        "female",
+        "yes",
+        "yes",
+        randint(1, 5),
+        randint(1, 5),
+        randint(1, 5),
+        randint(1, 5),
+        "yes",
+        "Female comment",
+        "mary@email.com",
+        datetime.now(),
+    ),
 ]
 
 
-@pytest.mark.parametrize("name,age,sex,first_visit,return_visit,clean,service,speed,food_quality,shisha,comment,email,timestamp", male_results)
-def test_male_x_axis(name, age, sex, first_visit, return_visit, clean, service, speed, food_quality, shisha, comment,  email, timestamp):
+@pytest.mark.parametrize(
+    "name,age,sex,first_visit,return_visit,clean,service,speed,food_quality,shisha,comment,email,timestamp",
+    male_results,
+)
+def test_male_x_axis(
+    name,
+    age,
+    sex,
+    first_visit,
+    return_visit,
+    clean,
+    service,
+    speed,
+    food_quality,
+    shisha,
+    comment,
+    email,
+    timestamp,
+):
     session: SessionLocal = SessionLocal()
     # create feedback object
     customer: FeedbackForm = FeedbackForm(
@@ -46,7 +127,7 @@ def test_male_x_axis(name, age, sex, first_visit, return_visit, clean, service, 
         shisha=shisha,
         comment=comment,
         email=email,
-        timestamp=timestamp
+        timestamp=timestamp,
     )
     # store feedback object to db
     customer_feedback: FeedbackForm = create_feedback(
@@ -61,7 +142,7 @@ def test_male_x_axis(name, age, sex, first_visit, return_visit, clean, service, 
         food_quality=customer.food_quality,
         shisha=customer.shisha,
         comment=customer.comment,
-        email=customer.email
+        email=customer.email,
     )
     with app.app_context():
         # get 1st feedback object from db

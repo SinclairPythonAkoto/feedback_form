@@ -9,7 +9,7 @@ def send_email(name: str, email: str, discount: str) -> bool:
     """Create an email with a 5% or 10% discount"""
     if not email:
         return False
-    
+
     email_timestamp = datetime.now().strftime("%H:%M")
     email_datestamp = datetime.now().strftime("%d/%m/%Y")
 
@@ -29,7 +29,7 @@ def send_email(name: str, email: str, discount: str) -> bool:
     return True
 
 
-def send_one_email(email:str, subject: str, content: str) -> bool:
+def send_one_email(email: str, subject: str, content: str) -> bool:
     """Send an email to chosen recipient"""
     if email is None:
         return False

@@ -17,20 +17,20 @@ def test_send_automated_email_to_customer():
     discount: str = "5%"
 
     with app.app_context():
-            mail = init_mail(app)
-            with mail.record_messages() as outbox:
-                email_sent: bool = send_email(name=name, email=email, discount=discount)
+        mail = init_mail(app)
+        with mail.record_messages() as outbox:
+            email_sent: bool = send_email(name=name, email=email, discount=discount)
 
-                expected_body: str = (
-                    f"Thank you {name} for completing our feedback form! You have earned {discount}"
-                    " off from your next bill.\n\nTo gain your discount please show this email to the cashier."
-                    f"\n\nPlease note that this expires 24hrs after {email_timestamp}, {email_datestamp}.\n\n\n"
-                )
+            expected_body: str = (
+                f"Thank you {name} for completing our feedback form! You have earned {discount}"
+                " off from your next bill.\n\nTo gain your discount please show this email to the cashier."
+                f"\n\nPlease note that this expires 24hrs after {email_timestamp}, {email_datestamp}.\n\n\n"
+            )
 
-                # check if email was sent
-                assert email_sent is True
+            # check if email was sent
+            assert email_sent is True
 
-                assert len(outbox) == 1
-                assert outbox[0].subject == f"Aurous79® {discount} Discount!"
-                assert outbox[0].recipients == [email]
-                assert outbox[0].body == expected_body
+            assert len(outbox) == 1
+            assert outbox[0].subject == f"Aurous79® {discount} Discount!"
+            assert outbox[0].recipients == [email]
+            assert outbox[0].body == expected_body

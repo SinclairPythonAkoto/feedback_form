@@ -13,10 +13,17 @@ from aurous79.utils.create_feedback import create_feedback
 from aurous79.utils.validate_age import minimum_age, check_age
 from aurous79.utils.create_email import send_email, send_one_email
 from aurous79.utils.mass_email_from_feedback import send_batch_emails_from_feedback
-from aurous79.utils.mass_email_from_email_library import send_batch_emails_from_email_lib
+from aurous79.utils.mass_email_from_email_library import (
+    send_batch_emails_from_email_lib,
+)
 from aurous79.utils.add_to_email_library import add_to_email_library
 from aurous79.utils.report_functions import (
-    get_male_report, get_female_report, get_first_visit_report, get_return_visit_report, get_shisha_report, get_all_reports
+    get_male_report,
+    get_female_report,
+    get_first_visit_report,
+    get_return_visit_report,
+    get_shisha_report,
+    get_all_reports,
 )
 
 from dotenv import load_dotenv
@@ -237,40 +244,55 @@ def report():
     else:
         if run_report == "male":
             male_entries: List[FeedbackForm] = get_male_report()
-            return render_template("report.html", title=title, male_entries=male_entries)
+            return render_template(
+                "report.html", title=title, male_entries=male_entries
+            )
         elif run_report == "female":
             female_entries: List[FeedbackForm] = get_female_report()
-            return render_template("report.html", title=title, female_entries=female_entries)
+            return render_template(
+                "report.html", title=title, female_entries=female_entries
+            )
         elif run_report == "n_visit":
             first_visit_entries: List[FeedbackForm] = get_first_visit_report()
-            return render_template("report.html", title=title, first_visit_entries=first_visit_entries)
+            return render_template(
+                "report.html", title=title, first_visit_entries=first_visit_entries
+            )
         elif run_report == "r_visit":
             return_visit_entries: List[FeedbackForm] = get_return_visit_report()
-            return render_template("report.html", title=title, return_visit_entries=return_visit_entries)
+            return render_template(
+                "report.html", title=title, return_visit_entries=return_visit_entries
+            )
         elif run_report == "shisha":
             shisha_entries: List[FeedbackForm] = get_shisha_report()
-            return render_template("report.html", title=title, shisha_entries=shisha_entries)
+            return render_template(
+                "report.html", title=title, shisha_entries=shisha_entries
+            )
         elif run_report == "clean":
             clean_entries: List[FeedbackForm] = get_all_reports()
-            return render_template("report.html", title=title, clean_entries=clean_entries)
+            return render_template(
+                "report.html", title=title, clean_entries=clean_entries
+            )
         elif run_report == "service":
             service_entries: List[FeedbackForm] = get_all_reports()
-            return render_template("report.html", title=title, service_entries=service_entries)
+            return render_template(
+                "report.html", title=title, service_entries=service_entries
+            )
         elif run_report == "speed":
             speed_entries: List[FeedbackForm] = get_all_reports()
-            return render_template("report.html", title=title, speed_entries=speed_entries)
+            return render_template(
+                "report.html", title=title, speed_entries=speed_entries
+            )
         else:
             if run_report == None:
                 flash(f"You need to select a report to run.")
-                return redirect(url_for('report'))
-
+                return redirect(url_for("report"))
 
 
 @app.route("/send-email", methods=["GET", "POST"])
 @login_required
 def send_single_email():
     if request.method == "GET":
-        return render_template("send_email.html", title=title) 
+        return render_template("send_email.html", title=title)
     else:
         email: str = request.form["name"]
         email_subject: str = request.form["sub"]
@@ -281,13 +303,15 @@ def send_single_email():
         if is_email_valid(email) is False:
             flash("Please enter a valid email.")
             return redirect(url_for("send_single_email"))
-        
+
         # check if email has been sent
         if create_email is False:
             flash("The email did not send. Please check the credentials and try again.")
             return redirect(url_for("send_single_email"))
         session: SessionLocal = SessionLocal()
-        data: List[EmailLibrary] = session.query(EmailLibrary).order_by(EmailLibrary.id).all()
+        data: List[EmailLibrary] = (
+            session.query(EmailLibrary).order_by(EmailLibrary.id).all()
+        )
         flash(f"Your email has been sent to {email}.")
         return render_template("send_email.html", title=title, data=data)
 
@@ -300,14 +324,18 @@ def send_mass_emails():
         email_subject: str = request.form["sub"]
         content: str = request.form["email_content"]
         if request.form["massEmail"] == "feedback_lib":
-            feedback_batch_emails: bool = send_batch_emails_from_feedback(email_subject, content)
+            feedback_batch_emails: bool = send_batch_emails_from_feedback(
+                email_subject, content
+            )
             if feedback_batch_emails is False:
                 flash("Could not send email. There are no emails stored in database.")
                 return redirect(url_for("send_mass_emails"))
             flash("Your email has been sent!")
             return render_template("mass_emails.html", title=title)
         elif request.form["massEmail"] == "email_lib":
-            email_lib_batch_emails: bool = send_batch_emails_from_email_lib(email_subject, content)
+            email_lib_batch_emails: bool = send_batch_emails_from_email_lib(
+                email_subject, content
+            )
             if email_lib_batch_emails is None:
                 flash("Could not send email. There are no emails stored in database.")
                 return redirect(url_for("send_mass_emails"))
@@ -317,7 +345,6 @@ def send_mass_emails():
             if request.form["massEmail"] == None:
                 flash("You forgot to select an email source.")
                 return redirect(url_for("send_mass_emails"))
-
 
 
 @app.route("/email-library", methods=["GET", "POST"])
@@ -334,12 +361,9 @@ def email_library():
         session.commit()
         # get all email entries
         data: EmailLibrary = session.query(EmailLibrary).order_by(EmailLibrary.id).all()
-        flash(f"You have stored {name}\'s email to the Aurous79® Email Library")
+        flash(f"You have stored {name}'s email to the Aurous79® Email Library")
         # display all entries
         return render_template("email_library,html", title=title, data=data)
-
-
-
 
 
 if __name__ == "__main__":

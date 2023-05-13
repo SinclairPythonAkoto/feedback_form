@@ -14,9 +14,11 @@ def send_batch_emails_from_email_lib(email_subject: str, email_content: str) -> 
     if email_library is None:
         return False
     # if email exists send message to recipients
-    email_library: List[Tuple[str]] = session.query(EmailLibrary.customer_email).all()    # returns a list of tuples [('email@email.com',)]
+    email_library: List[Tuple[str]] = session.query(
+        EmailLibrary.customer_email
+    ).all()  # returns a list of tuples [('email@email.com',)]
     email_recipients: List[str] = []
-    # convert tuple to list 
+    # convert tuple to list
     for customer in email_library:
         email_recipients.append(customer[0])
     msg = Message(f"{email_subject}", recipients=email_recipients)

@@ -6,7 +6,14 @@ from aurous79.extension import SessionLocal
 from aurous79.testing.client import client
 from aurous79.models import FeedbackForm
 from aurous79.utils.create_feedback import create_feedback
-from aurous79.utils.report_functions import get_male_report, get_first_visit_report, get_return_visit_report, get_shisha_report, get_female_report, get_all_reports
+from aurous79.utils.report_functions import (
+    get_male_report,
+    get_first_visit_report,
+    get_return_visit_report,
+    get_shisha_report,
+    get_female_report,
+    get_all_reports,
+)
 
 
 def test_get_male_report(client):
@@ -40,7 +47,7 @@ def test_get_male_report(client):
         food_quality=customer.food_quality,
         shisha=customer.shisha,
         comment=customer.comment,
-        email=customer.email
+        email=customer.email,
     )
     with app.app_context():
         # get feedback object from db
@@ -50,7 +57,7 @@ def test_get_male_report(client):
         assert customer.first_visit == get_feedback.first_visit
         assert customer.return_visit == get_feedback.return_visit
         assert customer.shisha == get_feedback.shisha
-        
+
         # check male results
         male_result: FeedbackForm = get_male_report()
         assert male_result[0].sex == "male"
@@ -74,12 +81,11 @@ def test_get_male_report(client):
         assert shisha_results[0].shisha == "yes"
         assert shisha_results[0].shisha == get_feedback.shisha
         assert all(data.shisha == "yes" for data in shisha_results)
-    
+
     # remove db data
     session.delete(customer_feedback)
     session.commit()
 
-    
     # check if data has been removed
     with app.app_context():
         get_feedback: FeedbackForm = FeedbackForm.query.first()
@@ -117,7 +123,7 @@ def test_get_female_report(client):
         food_quality=customer.food_quality,
         shisha=customer.shisha,
         comment=customer.comment,
-        email=customer.email
+        email=customer.email,
     )
     with app.app_context():
         # get feedback object from db
@@ -135,12 +141,11 @@ def test_get_female_report(client):
         assert all(entry.sex == "female" for entry in female_result)
 
         # check female results
-    
+
     # remove db data
     session.delete(customer_feedback)
     session.commit()
 
-    
     # check if data has been removed
     with app.app_context():
         get_feedback: FeedbackForm = FeedbackForm.query.first()

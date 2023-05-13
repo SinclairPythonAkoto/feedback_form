@@ -53,12 +53,12 @@ def test_find_email(client):
         comment=customer.comment,
         email=customer.email,
     )
-    
+
     # check if email entry exists in db
     assert find_email(customer.email) == True
 
     # check if random email exists in db
-    assert find_email('some_random_email@email.com') == False
+    assert find_email("some_random_email@email.com") == False
 
     session: SessionLocal = SessionLocal()
     session.delete(new_feedback)
@@ -98,10 +98,12 @@ incorrect_emails = [
     "timcook@apple.",
 ]
 
+
 # check if correct emails are valid
 @pytest.mark.parametrize("email", correct_emails)
 def test_valid_emails(email):
     assert is_email_valid(email) == True
+
 
 # check if incorrect emails are invalid
 @pytest.mark.parametrize("email", incorrect_emails)

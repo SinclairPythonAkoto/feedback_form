@@ -14,10 +14,12 @@ def send_batch_emails_from_feedback(email_subject: str, email_content: str) -> b
     if feedback_email is None:
         return False
     # if email exists send message to recipients
-    feedback_emails: List[Tuple[str]] = session.query(FeedbackForm.email).all()    # returns a list of tuples
+    feedback_emails: List[Tuple[str]] = session.query(
+        FeedbackForm.email
+    ).all()  # returns a list of tuples
     print(feedback_email)
     email_recipients: List[str] = []
-    # convert tuple to list 
+    # convert tuple to list
     for customer in feedback_emails:
         email_recipients.append(customer[0])
     msg = Message(f"{email_subject}", recipients=email_recipients)

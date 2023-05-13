@@ -5,7 +5,7 @@ from aurous79.utils.create_email import send_one_email
 
 def test_send_single_email():
     """Check if email is sent to given recipient"""
-    
+
     with app.app_context():
         mail = init_mail(app)
         with mail.record_messages() as outbox:
