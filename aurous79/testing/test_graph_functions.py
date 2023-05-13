@@ -345,11 +345,11 @@ def test_first_visit_axis(
         # get 1st feedback object from db
         get_1_feedback: FeedbackForm = FeedbackForm.query.first()
         # check if db object is the same as feedback object
-        assert get_1_feedback.return_visit == "yes"
-        assert customer.return_visit == get_1_feedback.return_visit
-        # check if num of return_visit macth X & Y axis function
+        assert get_1_feedback.first_visit == "yes"
+        assert customer.first_visit == get_1_feedback.first_visit
+        # check if num of first_visit macth X & Y axis function
         get_all_feedback: List[FeedbackForm] = FeedbackForm.query.all()
-        assert all(data.return_visit == return_visit for data in get_all_feedback)
+        assert all(data.first_visit == first_visit for data in get_all_feedback)
 
         assert first_visit_x() == 2
         assert first_visit_x() == len(get_all_feedback)
@@ -447,6 +447,101 @@ def test_return_visit_axis(
 
         assert return_visit_y() == 2
         assert return_visit_y() == len(get_all_feedback)
+
+    session.delete(customer_feedback_1)
+    session.delete(customer_feedback_2)
+    session.commit()
+
+    with app.app_context():
+        get_1_feedback: FeedbackForm = FeedbackForm.query.first()
+        assert get_1_feedback == None
+
+
+@pytest.mark.parametrize(
+    "name,age,sex,first_visit,return_visit,clean,service,speed,food_quality,shisha,comment,email,timestamp",
+    male_results,
+)
+def test_shisha_axis(
+    name,
+    age,
+    sex,
+    first_visit,
+    return_visit,
+    clean,
+    service,
+    speed,
+    food_quality,
+    shisha,
+    comment,
+    email,
+    timestamp,
+):
+    """Test to find all shisha entries from db using X & Y functions"""
+    session: SessionLocal = SessionLocal()
+    # create feedback object
+    customer: FeedbackForm = FeedbackForm(
+        name=name,
+        age=age,
+        sex=sex,
+        first_visit=first_visit,
+        return_visit=return_visit,
+        clean=clean,
+        service=service,
+        speed=speed,
+        food_quality=food_quality,
+        shisha=shisha,
+        comment=comment,
+        email=email,
+        timestamp=timestamp,
+    )
+    # store feedback object to db
+    customer_feedback_1: FeedbackForm = create_feedback(
+        name=customer.name,
+        age=customer.age,
+        sex=customer.sex,
+        first_visit=customer.first_visit,
+        return_visit=customer.return_visit,
+        clean=customer.clean,
+        service=customer.service,
+        speed=customer.speed,
+        food_quality=customer.food_quality,
+        shisha=customer.shisha,
+        comment=customer.comment,
+        email=customer.email,
+    )
+    customer_feedback_2: FeedbackForm = create_feedback(
+        name=customer.name,
+        age=customer.age,
+        sex=customer.sex,
+        first_visit=customer.first_visit,
+        return_visit=customer.return_visit,
+        clean=customer.clean,
+        service=customer.service,
+        speed=customer.speed,
+        food_quality=customer.food_quality,
+        shisha=customer.shisha,
+        comment=customer.comment,
+        email=customer.email,
+    )
+    with app.app_context():
+        # get 1st feedback object from db
+        get_1_feedback: FeedbackForm = FeedbackForm.query.first()
+        # check if db object is the same as feedback object
+        assert get_1_feedback.shisha == "yes"
+        assert customer.shisha == get_1_feedback.shisha
+        # check if num of shisha macth X & Y axis function
+        get_all_feedback: List[FeedbackForm] = FeedbackForm.query.all()
+        assert all(data.shisha == shisha for data in get_all_feedback)
+
+        assert shisha_x() == 2
+        assert shisha_x() == len(get_all_feedback)
+        # check if shisha score 1 - 5
+        assert shisha_x() <= 5
+
+        assert shisha_y() == 2
+        assert shisha_y() == len(get_all_feedback)
+        # check if shisha score 1 - 5
+        assert shisha_y() <= 5
 
     session.delete(customer_feedback_1)
     session.delete(customer_feedback_2)
