@@ -97,7 +97,7 @@ female_results: List[Tuple] = [
     "name,age,sex,first_visit,return_visit,clean,service,speed,food_quality,shisha,comment,email,timestamp",
     male_results,
 )
-def test_male_x_axis(
+def test_male_axis(
     name,
     age,
     sex,
@@ -130,7 +130,21 @@ def test_male_x_axis(
         timestamp=timestamp,
     )
     # store feedback object to db
-    customer_feedback: FeedbackForm = create_feedback(
+    customer_feedback_1: FeedbackForm = create_feedback(
+        name=customer.name,
+        age=customer.age,
+        sex=customer.sex,
+        first_visit=customer.first_visit,
+        return_visit=customer.return_visit,
+        clean=customer.clean,
+        service=customer.service,
+        speed=customer.speed,
+        food_quality=customer.food_quality,
+        shisha=customer.shisha,
+        comment=customer.comment,
+        email=customer.email,
+    )
+    customer_feedback_2: FeedbackForm = create_feedback(
         name=customer.name,
         age=customer.age,
         sex=customer.sex,
@@ -149,8 +163,19 @@ def test_male_x_axis(
         get_1_feedback: FeedbackForm = FeedbackForm.query.first()
         # check if db object is the same as feedback object
         assert get_1_feedback.sex == "male"
+        assert customer.sex == get_1_feedback.sex
+        # check if num of males macth X & Y axis function
+        get_all_feedback: List[FeedbackForm] = FeedbackForm.query.all()
+        assert all(data.sex == sex for data in get_all_feedback)
 
-    session.delete(customer_feedback)
+        assert male_x() == 2
+        assert male_x() == len(get_all_feedback)
+
+        assert male_y() == 2
+        assert male_y() == len(get_all_feedback)
+
+    session.delete(customer_feedback_1)
+    session.delete(customer_feedback_2)
     session.commit()
 
     with app.app_context():
