@@ -181,3 +181,93 @@ def test_male_axis(
     with app.app_context():
         get_1_feedback: FeedbackForm = FeedbackForm.query.first()
         assert get_1_feedback == None
+
+
+@pytest.mark.parametrize(
+    "name,age,sex,first_visit,return_visit,clean,service,speed,food_quality,shisha,comment,email,timestamp",
+    female_results,
+)
+def test_female_axis(
+    name,
+    age,
+    sex,
+    first_visit,
+    return_visit,
+    clean,
+    service,
+    speed,
+    food_quality,
+    shisha,
+    comment,
+    email,
+    timestamp,
+):
+    session: SessionLocal = SessionLocal()
+    # create feedback object
+    customer: FeedbackForm = FeedbackForm(
+        name=name,
+        age=age,
+        sex=sex,
+        first_visit=first_visit,
+        return_visit=return_visit,
+        clean=clean,
+        service=service,
+        speed=speed,
+        food_quality=food_quality,
+        shisha=shisha,
+        comment=comment,
+        email=email,
+        timestamp=timestamp,
+    )
+    # store feedback object to db
+    customer_feedback_1: FeedbackForm = create_feedback(
+        name=customer.name,
+        age=customer.age,
+        sex=customer.sex,
+        first_visit=customer.first_visit,
+        return_visit=customer.return_visit,
+        clean=customer.clean,
+        service=customer.service,
+        speed=customer.speed,
+        food_quality=customer.food_quality,
+        shisha=customer.shisha,
+        comment=customer.comment,
+        email=customer.email,
+    )
+    customer_feedback_2: FeedbackForm = create_feedback(
+        name=customer.name,
+        age=customer.age,
+        sex=customer.sex,
+        first_visit=customer.first_visit,
+        return_visit=customer.return_visit,
+        clean=customer.clean,
+        service=customer.service,
+        speed=customer.speed,
+        food_quality=customer.food_quality,
+        shisha=customer.shisha,
+        comment=customer.comment,
+        email=customer.email,
+    )
+    with app.app_context():
+        # get 1st feedback object from db
+        get_1_feedback: FeedbackForm = FeedbackForm.query.first()
+        # check if db object is the same as feedback object
+        assert get_1_feedback.sex == "female"
+        assert customer.sex == get_1_feedback.sex
+        # check if num of males macth X & Y axis function
+        get_all_feedback: List[FeedbackForm] = FeedbackForm.query.all()
+        assert all(data.sex == sex for data in get_all_feedback)
+
+        assert female_x() == 2
+        assert female_x() == len(get_all_feedback)
+
+        assert female_y() == 2
+        assert female_y() == len(get_all_feedback)
+
+    session.delete(customer_feedback_1)
+    session.delete(customer_feedback_2)
+    session.commit()
+
+    with app.app_context():
+        get_1_feedback: FeedbackForm = FeedbackForm.query.first()
+        assert get_1_feedback == None
