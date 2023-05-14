@@ -25,7 +25,24 @@ from aurous79.utils.report_functions import (
     get_shisha_report,
     get_all_reports,
 )
-from aurous79.utils.graph_functions import male_x, male_y, female_x, female_y, first_visit_x, first_visit_y, return_visit_x, return_visit_y, shisha_x, shisha_y,service_x, service_y, speed_x, speed_y, clean_x, clean_y
+from aurous79.utils.graph_functions import (
+    male_x,
+    male_y,
+    female_x,
+    female_y,
+    first_visit_x,
+    first_visit_y,
+    return_visit_x,
+    return_visit_y,
+    shisha_x,
+    shisha_y,
+    service_x,
+    service_y,
+    speed_x,
+    speed_y,
+    clean_x,
+    clean_y,
+)
 from dotenv import load_dotenv
 import dash
 import dash_core_components as dcc
@@ -263,7 +280,9 @@ def get_report():
         elif run_report == "r_visit":
             return_visit_entries: List[FeedbackForm] = get_return_visit_report()
             return render_template(
-                "get_report.html", title=title, return_visit_entries=return_visit_entries
+                "get_report.html",
+                title=title,
+                return_visit_entries=return_visit_entries,
             )
         elif run_report == "shisha":
             shisha_entries: List[FeedbackForm] = get_shisha_report()
@@ -291,7 +310,6 @@ def get_report():
     else:
         flash(f"The database is empty.")
         return redirect(url_for("get_report"))
-
 
 
 @app.route("/send-email", methods=["GET", "POST"])
@@ -374,64 +392,89 @@ def email_library():
 
 # creating dash graph
 aurous_graph: dash = dash.Dash(
-    __name__,
-    server=app,
-    routes_pathname_prefix="/aurous-graph/"
+    __name__, server=app, routes_pathname_prefix="/aurous-graph/"
 )
-aurous_graph.layout = html.Div(children=[
-    html.H1(children="Aurous79 Customer Analysis"),
-    html.Div(children="""
+aurous_graph.layout = html.Div(
+    children=[
+        html.H1(children="Aurous79 Customer Analysis"),
+        html.Div(
+            children="""
         Aurous79 Customer Analysis
-    """),
-    dcc.Graph(
-        id="aurous-graph-1",
-        figure={
-            "data": [
-                {"x": [1], "y": [male_y()], "type": "bar", "names": "Males"},
-                {"x": [2], "y": [female_y()], "type": "bar", "name": "Females"},
-            ],
-            "layout": {
-                "title": "Aurous79 Visitors by Gender"
+    """
+        ),
+        dcc.Graph(
+            id="aurous-graph-1",
+            figure={
+                "data": [
+                    {"x": [1], "y": [male_y()], "type": "bar", "names": "Males"},
+                    {"x": [2], "y": [female_y()], "type": "bar", "name": "Females"},
+                ],
+                "layout": {"title": "Aurous79 Visitors by Gender"},
             },
-        },
-    ),
-    html.Div(
-        """This graph displays the contrast between male & female customers who complete the Aurous79 feedback form."""
-    ),
-    dcc.Graph(
-        id="aurous-graph-2",
-        figure={
-            "data": [
-                {"x": [1], "y": [first_visit_y()], "type": "bar", "name": "New Visitors"},
-                {"x": [2], "y": [return_visit_y()], "type": "bar", "name": "Customer Services"},
-                {"x": [3], "y": [shisha_y()], "type": "bar", "name": "Tried Shihsa"},
-            ],
-            "layout": {
-                "title": "Aurous79 Customer Relations"
+        ),
+        html.Div(
+            """This graph displays the contrast between male & female customers who complete the Aurous79 feedback form."""
+        ),
+        dcc.Graph(
+            id="aurous-graph-2",
+            figure={
+                "data": [
+                    {
+                        "x": [1],
+                        "y": [first_visit_y()],
+                        "type": "bar",
+                        "name": "New Visitors",
+                    },
+                    {
+                        "x": [2],
+                        "y": [return_visit_y()],
+                        "type": "bar",
+                        "name": "Customer Services",
+                    },
+                    {
+                        "x": [3],
+                        "y": [shisha_y()],
+                        "type": "bar",
+                        "name": "Tried Shihsa",
+                    },
+                ],
+                "layout": {"title": "Aurous79 Customer Relations"},
             },
-        },
-    ),
-    html.Div(
-        """This graph displays the number of customers that were first time customers, customers that would return and customers that tried the shisha."""
-    ),
-    dcc.Graph(
-        id="aurous-graph-3",
-        figure={
-            "data": [
-                {"x": [clean_x()], "y": [clean_y()], "type": "bar", "name": "Cleaniness Rating"},
-                {"x": [service_x()], "y": [service_y()], "type": "bar", "name": "Customer Service Rating"},
-                {"x": [speed_x()], "y": [speed_y()], "type": "bar", "name": "Speed Rating"}
-            ],
-            "layout": {
-                "title": "Overall Aurous79 Customer Rating"
+        ),
+        html.Div(
+            """This graph displays the number of customers that were first time customers, customers that would return and customers that tried the shisha."""
+        ),
+        dcc.Graph(
+            id="aurous-graph-3",
+            figure={
+                "data": [
+                    {
+                        "x": [clean_x()],
+                        "y": [clean_y()],
+                        "type": "bar",
+                        "name": "Cleaniness Rating",
+                    },
+                    {
+                        "x": [service_x()],
+                        "y": [service_y()],
+                        "type": "bar",
+                        "name": "Customer Service Rating",
+                    },
+                    {
+                        "x": [speed_x()],
+                        "y": [speed_y()],
+                        "type": "bar",
+                        "name": "Speed Rating",
+                    },
+                ],
+                "layout": {"title": "Overall Aurous79 Customer Rating"},
             },
-        },
-    ),
-    html.Div(
-        """This graph displays the average ranking (out of 5) for Cleaniness, Customer Service and Speed by customers."""
-    ),
-
-])
+        ),
+        html.Div(
+            """This graph displays the average ranking (out of 5) for Cleaniness, Customer Service and Speed by customers."""
+        ),
+    ]
+)
 
 if __name__ == "__main__":
     aurous_graph.run_server(debug=True)

@@ -551,9 +551,51 @@ def test_shisha_axis(
         get_1_feedback: FeedbackForm = FeedbackForm.query.first()
         assert get_1_feedback == None
 
-expected_results: List[Tuple] = [
-    ("John Doe", 17, "male", "yes", "yes", 4, 5, 3, 4, "yes", "Comment from John", "john@email.com", datetime.now()),
-    ("Jane Doe", 18, "female", "yes", "yes", 5, 3, 4, 4, "yes", "Comment from Jane", "jane@email.com", datetime.now()),
-    ("Max Jones", 19, "male", "yes", "yes", 3, 4, 5, 4, "yes", "Comment from Max", "max@email.com", datetime.now()),
-]
 
+expected_results: List[Tuple] = [
+    (
+        "John Doe",
+        17,
+        "male",
+        "yes",
+        "yes",
+        4,
+        5,
+        3,
+        4,
+        "yes",
+        "Comment from John",
+        "john@email.com",
+        datetime.now(),
+    ),
+    (
+        "Jane Doe",
+        18,
+        "female",
+        "yes",
+        "yes",
+        5,
+        3,
+        4,
+        4,
+        "yes",
+        "Comment from Jane",
+        "jane@email.com",
+        datetime.now(),
+    ),
+    (
+        "Max Jones",
+        19,
+        "male",
+        "yes",
+        "yes",
+        3,
+        4,
+        5,
+        4,
+        "yes",
+        "Comment from Max",
+        "max@email.com",
+        datetime.now(),
+    ),
+]

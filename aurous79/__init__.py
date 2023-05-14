@@ -9,7 +9,7 @@ load_dotenv()
 def create_app() -> Flask:
     app: Flask = Flask(__name__)
     # add configurations here
-    app.config['SQLALCHEMY_POOL_SIZE'] = 1000
+    app.config["SQLALCHEMY_POOL_SIZE"] = 1000
     return app
 
 
