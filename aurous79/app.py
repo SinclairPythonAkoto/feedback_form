@@ -237,65 +237,68 @@ def logout():
     return redirect(url_for("home"))
 
 
-@app.route("/report", methods=["GET", "POST"])
+@app.route("/get-report", methods=["GET", "POST"])
 @login_required
-def report():
+def get_report():
     session: SessionLocal = SessionLocal()
-    run_report: str = request.form["run_rpt"]
     if request.method == "GET":
-        return render_template("report.html")
-    else:
+        return render_template("get_report.html", title=title)
+    elif "run_rpt" in request.form:
+        run_report: str = request.form["run_rpt"]
         if run_report == "male":
             male_entries: List[FeedbackForm] = get_male_report()
             return render_template(
-                "report.html", title=title, male_entries=male_entries
+                "get_report.html", title=title, male_entries=male_entries
             )
         elif run_report == "female":
             female_entries: List[FeedbackForm] = get_female_report()
             return render_template(
-                "report.html", title=title, female_entries=female_entries
+                "get_report.html", title=title, female_entries=female_entries
             )
         elif run_report == "n_visit":
             first_visit_entries: List[FeedbackForm] = get_first_visit_report()
             return render_template(
-                "report.html", title=title, first_visit_entries=first_visit_entries
+                "get_report.html", title=title, first_visit_entries=first_visit_entries
             )
         elif run_report == "r_visit":
             return_visit_entries: List[FeedbackForm] = get_return_visit_report()
             return render_template(
-                "report.html", title=title, return_visit_entries=return_visit_entries
+                "get_report.html", title=title, return_visit_entries=return_visit_entries
             )
         elif run_report == "shisha":
             shisha_entries: List[FeedbackForm] = get_shisha_report()
             return render_template(
-                "report.html", title=title, shisha_entries=shisha_entries
+                "get_report.html", title=title, shisha_entries=shisha_entries
             )
         elif run_report == "clean":
             clean_entries: List[FeedbackForm] = get_all_reports()
             return render_template(
-                "report.html", title=title, clean_entries=clean_entries
+                "get_report.html", title=title, clean_entries=clean_entries
             )
         elif run_report == "service":
             service_entries: List[FeedbackForm] = get_all_reports()
             return render_template(
-                "report.html", title=title, service_entries=service_entries
+                "get_report.html", title=title, service_entries=service_entries
             )
         elif run_report == "speed":
             speed_entries: List[FeedbackForm] = get_all_reports()
             return render_template(
-                "report.html", title=title, speed_entries=speed_entries
+                "get_report.html", title=title, speed_entries=speed_entries
             )
         else:
-            if run_report == None:
-                flash(f"You need to select a report to run.")
-                return redirect(url_for("report"))
+            flash(f"You need to select a report to run.")
+            return redirect(url_for("get_report"))
+    else:
+        flash(f"The database is empty.")
+        return redirect(url_for("get_report"))
+
 
 
 @app.route("/send-email", methods=["GET", "POST"])
 @login_required
 def send_single_email():
     if request.method == "GET":
-        return render_template("send_email.html", title=title)
+        return render_template("single_email.html", title=title)
     else:
         email: str = request.form["name"]
         email_subject: str = request.form["sub"]
@@ -316,7 +319,7 @@ def send_single_email():
             session.query(EmailLibrary).order_by(EmailLibrary.id).all()
         )
         flash(f"Your email has been sent to {email}.")
-        return render_template("send_email.html", title=title, data=data)
+        return render_template("single_email.html", title=title, data=data)
 
 
 @app.route("/mass-emails", methods=["GET", "POST"])
@@ -373,9 +376,9 @@ def email_library():
 aurous_graph: dash = dash.Dash(
     __name__,
     server=app,
-    routes_pathname_prefix="/dash/"
+    routes_pathname_prefix="/aurous-graph/"
 )
-app.layout = html.Div(children=[
+aurous_graph.layout = html.Div(children=[
     html.H1(children="Aurous79 Customer Analysis"),
     html.Div(children="""
         Aurous79 Customer Analysis

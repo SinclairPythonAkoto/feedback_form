@@ -185,11 +185,11 @@ body {
 <div class="topnav" id="myTopnav">
   <a href="http://www.aurous79.com/index.php" class="active">Aurous79</a>
   <a href="{{ url_for('admin') }}">Admin Home</a>
-  <a href="{{ url_for('report') }}">Reports</a>
+  <a href="{{ url_for('get_report') }}">Reports</a>
   <a href="{{ url_for('send_single_email') }}">Send Email</a>
   <a href="{{ url_for('send_mass_emails') }}">Mass Emails</a>
   <a href="{{ url_for('email_library') }}">Email Library</a>
-  <a href="/dash/">Graphs</a>
+  <a href="/aurous-graph/">Graphs</a>
   <a href="javascript:void(0);" class="icon" onclick="myFunction()">
     <i class="fa fa-bars"></i>
   </a>
@@ -221,7 +221,7 @@ function myFunction() {
 <br>
 <br>
 <div>
-  <a href="{{ url_for('report') }}">Run Report</a><br><br>
+  <a href="{{ url_for('get_report') }}">Run Report</a><br><br>
   <a href="{{ url_for('send_single_email') }}">Send Single Email</a><br><br>
   <a href="{{ url_for('send_mass_emails') }}">Send Mass Email</a><br><br>
   <a href="{{ url_for('email_library') }}">Email Library</a><br><br>
