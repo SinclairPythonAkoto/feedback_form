@@ -1,4 +1,5 @@
 import os
+from aurous79.api import api
 from aurous79 import app, init_mail
 from typing import List, Dict
 from flask import render_template, url_for, request, redirect, flash, session
@@ -45,8 +46,8 @@ from aurous79.utils.graph_functions import (
 )
 from dotenv import load_dotenv
 import dash
-import dash_core_components as dcc
-import dash_html_components as html
+from dash import dcc
+from dash import html
 
 load_dotenv()
 
