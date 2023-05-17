@@ -1,5 +1,4 @@
 import os
-from aurous79.api import api
 from aurous79 import app, init_mail
 from typing import List, Dict
 from flask import render_template, url_for, request, redirect, flash, session
@@ -48,6 +47,14 @@ from dotenv import load_dotenv
 import dash
 from dash import dcc
 from dash import html
+# api
+from aurous79.api import api
+from aurous79.api.models import db_models
+from aurous79.api.services.public import public_api_service
+from aurous79.api.services.private import private_api_service
+from aurous79.api.route import routes
+from aurous79.api.schema import schema
+
 
 load_dotenv()
 
