@@ -12,3 +12,4 @@ aurous79/api/services/private/__pycache__
 aurous79/api/schema/__pycache__
 aurous79/api/route/__pycache__
 aurous79/api/models/__pycache__
+aurous79/api/errors/__pycache__

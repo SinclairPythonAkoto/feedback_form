@@ -3,6 +3,7 @@ from typing import List, Dict
 from aurous79 import app
 from aurous79.extension import SessionLocal
 from aurous79.models import FeedbackForm
+from aurous79.api.errors.error_handling_messages import handle_not_found_error
 from flask import jsonify
 
 
@@ -10,16 +11,6 @@ from flask import jsonify
 @app.route("/api/v1/service/public/")
 def public_service():
     return jsonify("public services api")
-
-# Define a custom error handler for 404 Not Found errors
-@app.errorhandler(404)
-def handle_not_found_error(error):
-    return jsonify({'error': 'Feedback form not found'}), 404
-
-# Define a custom error handler for 500 Internal Server Error errors
-@app.errorhandler(500)
-def handle_internal_server_error(error):
-    return jsonify({'error': 'Internal Server Error'}), 500
 
 
 
